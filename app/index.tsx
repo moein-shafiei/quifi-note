@@ -37,7 +37,13 @@ export default function Index() {
     >
       <Text>Edit app/index.tsx to edit this screen...</Text>
       <Button
-        onPress={() => dv.schedulePushNotification()}
+        onPress={() =>
+          dv.schedulePushNotification({
+            picture: "",
+            textMessage: "",
+            title: "",
+          })
+        }
         title="Notify"
       />
     </View>
