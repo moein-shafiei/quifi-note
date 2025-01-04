@@ -1,16 +1,14 @@
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
 import { INotificationService } from "../Intermediate/INotificationService";
-import { NotificationM } from '../Intermediate/Notification';
-import Constants from 'expo-constants';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { NotificationM } from "../Intermediate/Notification";
 
-export class DeviceNotificationService implements INotificationService
-{
+export class DeviceNotificationService implements INotificationService {
   private isInitialized = false; // Flag to track if initialization has been performed
 
-constructor()
-{
+  constructor() {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldShowAlert: true,
@@ -18,130 +16,116 @@ constructor()
         shouldSetBadge: false,
       }),
     });
-}
+  }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) {
-      console.log('DeviceNotificationService is already initialized.');
+      console.log("DeviceNotificationService is already initialized.");
       return;
     }
 
-    console.log('Initializing DeviceNotificationService...');
     await this.defineNotificationCategories(); // Call your category definition method
     this.isInitialized = true; // Mark as initialized
-    console.log('Initialization complete.');
   }
 
-  async send(Notification: NotificationM): Promise<void>
-  {
-    throw new Error('Method not implemented.');
+  async send(Notification: NotificationM): Promise<void> {
+    throw new Error("Method not implemented.");
   }
 
-  async isSupported(): Promise<boolean>
-  {
-    if (!Device.isDevice)
-    {
-      throw new Error('Must use physical device for Push Notifications.');
+  async isSupported(): Promise<boolean> {
+    if (!Device.isDevice) {
+      throw new Error("Must use physical device for Push Notifications.");
     }
 
     return true;
   }
 
-  async defineNotificationCategories()
-  {
-    await Notifications.setNotificationCategoryAsync('customCategory', [
+  async defineNotificationCategories() {
+    await Notifications.setNotificationCategoryAsync("customCategory", [
       {
-        identifier: 'know',
-        buttonTitle: '👍 I know',
+        identifier: "know",
+        buttonTitle: "👍 I know",
         options: { opensAppToForeground: true },
       },
       {
-        identifier: 'reply',
-        buttonTitle: '💬 Reply',
+        identifier: "reply",
+        buttonTitle: "💬 Reply",
         options: { opensAppToForeground: true },
-        textInput: { placeholder: 'Type your reply here...' },
+        textInput: { placeholder: "Type your reply here..." },
       },
     ]);
-    console.log('Notification categories set up!');
+    console.log("Notification categories set up!");
 
-    Notifications.addNotificationResponseReceivedListener((response) =>
-    {
+    Notifications.addNotificationResponseReceivedListener((response) => {
       const actionIdentifier = response.actionIdentifier;
 
-      switch (actionIdentifier)
-      {
-        case 'know':
+      switch (actionIdentifier) {
+        case "know":
           this.schedulePushNotification();
           break;
-        case 'reply':
+        case "reply":
           console.log('User tapped "Reply"');
           // Optionally, handle text input if added
           break;
         default:
-          console.log('Notification clicked or unknown action:', actionIdentifier);
+          console.log(
+            "Notification clicked or unknown action:",
+            actionIdentifier
+          );
       }
     });
   }
 
-  async schedulePushNotification()
-  {
-
-
+  async schedulePushNotification() {
     //await this.defineNotificationCategories();
 
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "You've got mail! 📬",
-        body: 'Here is the notification body',
-        data: { data: 'goes here', test: { test1: 'more data' } },
-        categoryIdentifier: 'customCategory'
+        body: "Here is the notification body",
+        data: { data: "goes here", test: { test1: "more data" } },
+        categoryIdentifier: "customCategory",
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 3
-      }
+        seconds: 3,
+      },
     });
   }
 
-
-  async registerForPushNotificationsAsync()
-  {
+  async registerForPushNotificationsAsync() {
     let token;
 
-    if (Platform.OS === 'android')
-    {
-      await Notifications.setNotificationChannelAsync('myNotificationChannel', {
-        name: 'A channel is needed for the permissions prompt to appear',
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("myNotificationChannel", {
+        name: "A channel is needed for the permissions prompt to appear",
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
+        lightColor: "#FF231F7C",
       });
     }
 
-    if (Device.isDevice)
-    {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
-      if (existingStatus !== 'granted')
-      {
+      if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== 'granted')
-      {
-        alert('Failed to get push token for push notification!');
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
         return;
       }
       // Learn more about projectId:
       // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
       // EAS projectId is used here.
-      try
-      {
+      try {
         const projectId =
-          Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-        if (!projectId)
-        {
-          throw new Error('Project ID not found');
+          Constants?.expoConfig?.extra?.eas?.projectId ??
+          Constants?.easConfig?.projectId;
+        if (!projectId) {
+          throw new Error("Project ID not found");
         }
         token = (
           await Notifications.getExpoPushTokenAsync({
@@ -149,20 +133,15 @@ constructor()
           })
         ).data;
         console.log(token);
-      } catch (e)
-      {
-        token = `${ e }`;
+      } catch (e) {
+        token = `${e}`;
       }
-    } else
-    {
-      alert('Must use physical device for Push Notifications');
+    } else {
+      alert("Must use physical device for Push Notifications");
     }
 
     return token;
   }
-
-
-
 }
 
 /*
@@ -233,5 +212,3 @@ export default function App() {
   );
 }
 */
-
-
