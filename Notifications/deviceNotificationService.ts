@@ -24,6 +24,17 @@ export class DeviceNotificationService implements INotificationService {
       return;
     }
 
+    // registerForPushNotificationsAsync().then(
+    //   (token) => token
+    //   //&& setExpoPushToken(token)
+    // );
+
+    const token = await this.registerForPushNotificationsAsync();
+
+    if (Platform.OS === "android") {
+      await Notifications.getNotificationChannelsAsync();
+    }
+
     await this.defineNotificationCategories(); // Call your category definition method
     this.isInitialized = true; // Mark as initialized
   }

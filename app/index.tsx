@@ -7,18 +7,6 @@ export default function Index() {
   const dv = new DeviceNotificationService();
 
   useEffect(() => {
-    dv.registerForPushNotificationsAsync().then(
-      (token) => token
-      //&& setExpoPushToken(token)
-    );
-
-    if (Platform.OS === "android") {
-      Notifications.getNotificationChannelsAsync().then(
-        (value) => console.log()
-        //setChannels(value ?? [])
-      );
-    }
-
     dv.initialize();
     // notificationListener.current = Notifications.addNotificationReceivedListener(notification =>
     // {
@@ -51,7 +39,7 @@ export default function Index() {
       <Text>Edit app/index.tsx to edit this screen...</Text>
       <Button
         onPress={() => dv.schedulePushNotification()}
-        title="device"
+        title="Notify"
       />
     </View>
   );
