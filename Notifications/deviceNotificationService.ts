@@ -40,7 +40,7 @@ export class DeviceNotificationService implements INotificationService {
   }
 
   async send(Notification: NotificationM): Promise<void> {
-    throw new Error("Method not implemented.");
+    return this.schedulePushNotification(Notification);
   }
 
   async isSupported(): Promise<boolean> {
@@ -59,24 +59,35 @@ export class DeviceNotificationService implements INotificationService {
         options: { opensAppToForeground: true },
       },
       {
-        identifier: "reply",
-        buttonTitle: "💬 Reply",
+        identifier: "learning",
+        buttonTitle: "💬 Learning",
         options: { opensAppToForeground: true },
         textInput: { placeholder: "Type your reply here..." },
       },
+      // {
+      //   identifier: "reply",
+      //   buttonTitle: "💬 Reply",
+      //   options: { opensAppToForeground: true },
+      //   textInput: { placeholder: "Type your reply here..." },
+      // },
     ]);
     console.log("Notification categories set up!");
 
     Notifications.addNotificationResponseReceivedListener((response) => {
       const actionIdentifier = response.actionIdentifier;
 
+      const notification: NotificationM = {
+        picture: "",
+        textMessage: "",
+        title: "",
+      };
+
       switch (actionIdentifier) {
         case "know":
-          this.schedulePushNotification();
+          this.schedulePushNotification(notification);
           break;
-        case "reply":
-          console.log('User tapped "Reply"');
-          // Optionally, handle text input if added
+        case "learning":
+          this.schedulePushNotification(notification);
           break;
         default:
           console.log(
@@ -87,7 +98,7 @@ export class DeviceNotificationService implements INotificationService {
     });
   }
 
-  async schedulePushNotification() {
+  async schedulePushNotification(notification: NotificationM) {
     //await this.defineNotificationCategories();
 
     await Notifications.scheduleNotificationAsync({

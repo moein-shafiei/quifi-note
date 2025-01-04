@@ -1,7 +1,6 @@
 import { DeviceNotificationService } from "@/Notifications/deviceNotificationService";
 import { useEffect } from "react";
-import * as Notifications from "expo-notifications";
-import { Button, Platform, Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 
 export default function Index() {
   const dv = new DeviceNotificationService();
