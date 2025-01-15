@@ -1,7 +1,6 @@
-import { DeviceNotificationService } from "@/Notifications/deviceNotificationService";
-import { NotificationManger } from "@/Notifications/notificationManager";
 import { useEffect } from "react";
 import { Button, Text, View } from "react-native";
+import { NotificationManger } from "../Notifications/notificationManager";
 
 export default function Index()
 {

@@ -1,6 +1,6 @@
-import { INotificationService } from "@/Intermediate/INotificationService";
-import { NotificationM } from "@/Intermediate/Notification";
 import { Platform } from "react-native";
+import { INotificationService } from "../Intermediate/INotificationService";
+import { NotificationM } from "../Intermediate/Notification";
 import { DeviceNotificationService } from "./deviceNotificationService";
 import { WebNotificationService } from "./webNotificationService";
 
