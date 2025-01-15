@@ -42,7 +42,7 @@ export default function Index()
       <Button
         onPress={ () =>
           dv.Send({
-            picture: "",
+            picture: "https://uxwing.com/wp-content/themes/uxwing/download/signs-and-symbols/no-photography-icon.png",
             textMessage: "",
             title: "",
           })

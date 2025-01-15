@@ -59,29 +59,8 @@ export class DeviceNotificationService implements INotificationService
     return true;
   }
 
-  async defineNotificationCategories()
+  setupNotificationListener()
   {
-    await Notifications.setNotificationCategoryAsync("customCategory", [
-      {
-        identifier: "know",
-        buttonTitle: "👍 I know",
-        options: { opensAppToForeground: true },
-      },
-      {
-        identifier: "learning",
-        buttonTitle: "💬 Learning",
-        options: { opensAppToForeground: true },
-        textInput: { placeholder: "Type your reply here..." },
-      },
-      // {
-      //   identifier: "reply",
-      //   buttonTitle: "💬 Reply",
-      //   options: { opensAppToForeground: true },
-      //   textInput: { placeholder: "Type your reply here..." },
-      // },
-    ]);
-    console.log("Notification categories set up!");
-
     Notifications.addNotificationResponseReceivedListener((response) =>
     {
       const actionIdentifier = response.actionIdentifier;
@@ -107,6 +86,31 @@ export class DeviceNotificationService implements INotificationService
           );
       }
     });
+  }
+
+  async defineNotificationCategories()
+  {
+    await Notifications.setNotificationCategoryAsync("customCategory", [
+      {
+        identifier: "know",
+        buttonTitle: "👍 I know",
+        options: { opensAppToForeground: true },
+      },
+      {
+        identifier: "learning",
+        buttonTitle: "💬 Learning",
+        options: { opensAppToForeground: true },
+      },
+      // {
+      //   identifier: "reply",
+      //   buttonTitle: "💬 Reply",
+      //   options: { opensAppToForeground: true },
+      //   textInput: { placeholder: "Type your reply here..." },
+      // },
+    ]);
+    console.log("Notification categories set up!");
+
+
   }
 
   async schedulePushNotification(notification: NotificationM)
