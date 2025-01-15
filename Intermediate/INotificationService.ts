@@ -2,7 +2,8 @@ import { NotificationM } from "./Notification";
 
 export interface INotificationService
 {
-    send(Notification: NotificationM): Promise<void>;
+    Send(Notification: NotificationM): Promise<void>;
 
-    isSupported(): Promise<boolean>;
+    IsSupported(): Promise<boolean>;
+    Initialize(): Promise<void>;
 }

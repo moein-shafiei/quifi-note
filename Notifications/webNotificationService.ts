@@ -1,17 +1,22 @@
+import { Alert } from "react-native";
 import { INotificationService } from "../Intermediate/INotificationService";
 import { NotificationM } from '../Intermediate/Notification';
-import { Alert } from "react-native";
 
 export class WebNotificationService implements INotificationService
 {
-    async isSupported(): Promise<boolean>
+    async Initialize(): Promise<void>
+    {
+        return;
+    }
+
+    async IsSupported(): Promise<boolean>
     {
         return 'Notification' in window;
     }
 
-    async send(notification: NotificationM): Promise<void>
+    async Send(notification: NotificationM): Promise<void>
     {
-        if (!await this.isSupported())
+        if (!await this.IsSupported())
         {
             console.error("Web Notifications are not supported on this browser.");
             return;

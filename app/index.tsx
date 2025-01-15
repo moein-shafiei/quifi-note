@@ -1,12 +1,14 @@
-import { DeviceNotificationService } from "@/Notifications/deviceNotificationService";
 import { useEffect } from "react";
 import { Button, Text, View } from "react-native";
+import { NotificationManger } from "../Notifications/notificationManager";
 
-export default function Index() {
-  const dv = new DeviceNotificationService();
+export default function Index()
+{
+  const dv = new NotificationManger();
 
-  useEffect(() => {
-    dv.initialize();
+  useEffect(() =>
+  {
+    dv.Initialize();
     // notificationListener.current = Notifications.addNotificationReceivedListener(notification =>
     // {
     //   setNotification(notification);
@@ -17,7 +19,8 @@ export default function Index() {
     //   console.log(response);
     // });
 
-    return () => {
+    return () =>
+    {
       // notificationListener.current &&
       //   Notifications.removeNotificationSubscription(
       //     notificationListener.current
@@ -29,16 +32,16 @@ export default function Index() {
 
   return (
     <View
-      style={{
+      style={ {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-      }}
+      } }
     >
       <Text>Edit app/index.tsx to edit this screen...</Text>
       <Button
-        onPress={() =>
-          dv.schedulePushNotification({
+        onPress={ () =>
+          dv.Send({
             picture: "",
             textMessage: "",
             title: "",

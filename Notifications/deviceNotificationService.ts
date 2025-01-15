@@ -5,10 +5,12 @@ import { Platform } from "react-native";
 import { INotificationService } from "../Intermediate/INotificationService";
 import { NotificationM } from "../Intermediate/Notification";
 
-export class DeviceNotificationService implements INotificationService {
+export class DeviceNotificationService implements INotificationService
+{
   private isInitialized = false; // Flag to track if initialization has been performed
 
-  constructor() {
+  constructor()
+  {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldShowAlert: true,
@@ -18,8 +20,10 @@ export class DeviceNotificationService implements INotificationService {
     });
   }
 
-  async initialize(): Promise<void> {
-    if (this.isInitialized) {
+  async Initialize(): Promise<void>
+  {
+    if (this.isInitialized)
+    {
       console.log("DeviceNotificationService is already initialized.");
       return;
     }
@@ -31,7 +35,8 @@ export class DeviceNotificationService implements INotificationService {
 
     const token = await this.registerForPushNotificationsAsync();
 
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android")
+    {
       await Notifications.getNotificationChannelsAsync();
     }
 
@@ -39,19 +44,23 @@ export class DeviceNotificationService implements INotificationService {
     this.isInitialized = true; // Mark as initialized
   }
 
-  async send(Notification: NotificationM): Promise<void> {
+  async Send(Notification: NotificationM): Promise<void>
+  {
     return this.schedulePushNotification(Notification);
   }
 
-  async isSupported(): Promise<boolean> {
-    if (!Device.isDevice) {
+  async IsSupported(): Promise<boolean>
+  {
+    if (!Device.isDevice)
+    {
       throw new Error("Must use physical device for Push Notifications.");
     }
 
     return true;
   }
 
-  async defineNotificationCategories() {
+  async defineNotificationCategories()
+  {
     await Notifications.setNotificationCategoryAsync("customCategory", [
       {
         identifier: "know",
@@ -73,7 +82,8 @@ export class DeviceNotificationService implements INotificationService {
     ]);
     console.log("Notification categories set up!");
 
-    Notifications.addNotificationResponseReceivedListener((response) => {
+    Notifications.addNotificationResponseReceivedListener((response) =>
+    {
       const actionIdentifier = response.actionIdentifier;
 
       const notification: NotificationM = {
@@ -82,7 +92,8 @@ export class DeviceNotificationService implements INotificationService {
         title: "",
       };
 
-      switch (actionIdentifier) {
+      switch (actionIdentifier)
+      {
         case "know":
           this.schedulePushNotification(notification);
           break;
@@ -98,7 +109,8 @@ export class DeviceNotificationService implements INotificationService {
     });
   }
 
-  async schedulePushNotification(notification: NotificationM) {
+  async schedulePushNotification(notification: NotificationM)
+  {
     //await this.defineNotificationCategories();
 
     await Notifications.scheduleNotificationAsync({
@@ -115,10 +127,12 @@ export class DeviceNotificationService implements INotificationService {
     });
   }
 
-  async registerForPushNotificationsAsync() {
+  async registerForPushNotificationsAsync()
+  {
     let token;
 
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android")
+    {
       await Notifications.setNotificationChannelAsync("myNotificationChannel", {
         name: "A channel is needed for the permissions prompt to appear",
         importance: Notifications.AndroidImportance.MAX,
@@ -127,26 +141,31 @@ export class DeviceNotificationService implements INotificationService {
       });
     }
 
-    if (Device.isDevice) {
+    if (Device.isDevice)
+    {
       const { status: existingStatus } =
         await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
+      if (existingStatus !== "granted")
+      {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== "granted") {
+      if (finalStatus !== "granted")
+      {
         alert("Failed to get push token for push notification!");
         return;
       }
       // Learn more about projectId:
       // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
       // EAS projectId is used here.
-      try {
+      try
+      {
         const projectId =
           Constants?.expoConfig?.extra?.eas?.projectId ??
           Constants?.easConfig?.projectId;
-        if (!projectId) {
+        if (!projectId)
+        {
           throw new Error("Project ID not found");
         }
         token = (
@@ -155,10 +174,12 @@ export class DeviceNotificationService implements INotificationService {
           })
         ).data;
         console.log(token);
-      } catch (e) {
-        token = `${e}`;
+      } catch (e)
+      {
+        token = `${ e }`;
       }
-    } else {
+    } else
+    {
       alert("Must use physical device for Push Notifications");
     }
 
