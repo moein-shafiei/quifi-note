@@ -6,4 +6,5 @@ export interface INotificationService
 
     IsSupported(): Promise<boolean>;
     Initialize(): Promise<void>;
+    SetupNotificationListener(): Promise<string>;
 }

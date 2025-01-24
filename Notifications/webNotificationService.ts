@@ -43,32 +43,39 @@ export class WebNotificationService implements INotificationService
         }
     }
 
-    setupNotificationListener()
+    SetupNotificationListener(): Promise<string>
     {
-        navigator.serviceWorker.addEventListener('notificationclick', (event) =>
-        {
-            if (!event.action)
+        return new Promise(
+            (resolver) =>
             {
-                // No action button was clicked, handle the notification click
-                return;
-            }
+                navigator.serviceWorker.addEventListener('notificationclick', (event) =>
+                {
+                    // if (!event.action)
+                    // {
+                    //     // No action button was clicked, handle the notification click
+                    //     return;
+                    // }
 
-            switch (event.action)
-            {
-                case 'know':
-                    console.log('User clicked "Know"');
-                    // Handle the "Know" action
-                    break;
-                case 'learning':
-                    console.log('User clicked "Learning"');
-                    // Handle the "Learning" action
-                    break;
-                default:
-                    console.log(`Unknown action clicked: ${ event.action }`);
-                    break;
-            }
+                    // switch (event.action)
+                    // {
+                    //     case 'know':
+                    //         console.log('User clicked "Know"');
+                    //         // Handle the "Know" action
+                    //         break;
+                    //     case 'learning':
+                    //         console.log('User clicked "Learning"');
+                    //         // Handle the "Learning" action
+                    //         break;
+                    //     default:
+                    //         console.log(`Unknown action clicked: ${ event.action }`);
+                    //         break;
+                    // }
 
-            event.notification.close();
-        });
+                    event.notification.close();
+
+                    resolver(event.action);
+                });
+            }
+        );
     }
 }

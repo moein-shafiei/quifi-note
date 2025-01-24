@@ -20,6 +20,11 @@ export class DeviceNotificationService implements INotificationService
     });
   }
 
+  SetupNotificationListener(): Promise<string>
+  {
+    throw new Error("Method not implemented.");
+  }
+
   async Initialize(): Promise<void>
   {
     if (this.isInitialized)
@@ -124,10 +129,11 @@ export class DeviceNotificationService implements INotificationService
         data: { data: "goes here", test: { test1: "more data" } },
         categoryIdentifier: "customCategory",
       },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 3,
-      },
+      trigger: null
+      // trigger: {
+      //   type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+      //   seconds: 3,
+      // },
     });
   }
 
