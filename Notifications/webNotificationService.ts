@@ -31,16 +31,23 @@ export class WebNotificationService implements INotificationService
                 body: notification.textMessage,
                 icon: notification.picture,
                 image: notification.picture, // Add this line to include the picture in the notification
-                actions: [
-                    { action: 'know', title: '👍 Know' },
-                    { action: 'learning', title: '💬 Learning' },
-                ]
+                actions: notification.actions,
             });
 
         } else
         {
             Alert.alert("Notification permission not granted.");
         }
+    }
+
+    async ScheduleNotif(notification: NotificationM, intervalMs: number = 60000): Promise<void> 
+    {
+        await this.Send(notification);
+
+        setInterval(async () => 
+            {
+            await this.Send(notification);
+        }, intervalMs);
     }
 
     SetupNotificationListener(): Promise<string>

@@ -41,11 +41,7 @@ export default function Index()
       <Text>Edit app/index.tsx to edit this screen...</Text>
       <Button
         onPress={ () =>
-          dv.Send({
-            picture: "https://uxwing.com/wp-content/themes/uxwing/download/signs-and-symbols/no-photography-icon.png",
-            textMessage: "",
-            title: "",
-          })
+          dv.Send()
         }
         title="Notify"
       />
