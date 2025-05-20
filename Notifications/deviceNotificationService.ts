@@ -22,7 +22,9 @@ export class DeviceNotificationService implements INotificationService
 
   SetupNotificationListener(): Promise<string>
   {
-    throw new Error("Method not implemented.");
+    return new Promise((resolve, reject) => {
+      this.setupNotificationListener();
+    });
   }
 
   async Initialize(): Promise<void>
