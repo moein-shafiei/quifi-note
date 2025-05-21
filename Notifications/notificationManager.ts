@@ -30,7 +30,7 @@ export class NotificationManger
             if (response == "know")
             {
                 console.log("User acknowledged the notification.");
-                this.Schedule(1000);
+                this.Schedule(5000);
             }
         });
     }
@@ -48,8 +48,7 @@ export class NotificationManger
             ]
         };
 
-        //await this.notificationService.ScheduleNotif(notification, intervalMs);
-        await this.notificationService.Send(notification);
+        await this.notificationService.ScheduleNotif(notification, intervalMs);
     }
 
     async Send(): Promise<void>
