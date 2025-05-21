@@ -7,7 +7,6 @@ import { WebNotificationService } from "./webNotificationService";
 export class NotificationManger
 {
     notificationService: INotificationService;
-    responseListener: Promise<string> = Promise.resolve("");
 
     constructor()
     {
@@ -24,30 +23,21 @@ export class NotificationManger
     {
         await this.notificationService.Initialize();
 
-        this.responseListener = this.notificationService.SetupNotificationListener();
-
-        this.responseListener.then(
-            (response) =>
+        // Use callback for notification actions
+        this.notificationService.SetupNotificationListener((response) =>
+        {
+            console.log("Notification response received2:", response);
+            if (response == "know")
             {
-                console.log("Notification response received2:", response);
-
-                if (response == "know")
-                {
-                    console.log("User acknowledged the notification.");
-                    this.Schedule(1000);
-                }
+                console.log("User acknowledged the notification.");
+                this.Schedule(1000);
             }
-        ).catch(
-            (error) =>
-            {
-                console.error("Error receiving notification response:", error);
-            }
-        );
+        });
     }
 
     async Schedule(intervalMs: number = 60000): Promise<void>
     {
-        const notification: NotificationM = 
+        const notification: NotificationM =
         {
             title: "Test Notification",
             textMessage: "This is a test notification",
@@ -65,7 +55,7 @@ export class NotificationManger
     async Send(): Promise<void>
     {
         await this.notificationService.Send({
-            title: "Test Notification", 
+            title: "Test Notification",
             textMessage: "This is a test notification",
             picture: "https://png.pngtree.com/png-vector/20220315/ourmid/pngtree-sample-stamp-ink-sample-vector-png-image_16532122.png",
             actions: [

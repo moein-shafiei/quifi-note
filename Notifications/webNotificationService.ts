@@ -48,23 +48,19 @@ export class WebNotificationService implements INotificationService
         }, intervalMs);
     }
 
-    SetupNotificationListener(): Promise<string>
+    SetupNotificationListener(onAction: (action: string) => void): void
     {
-        return new Promise(
-            (resolver) =>
+        if ('serviceWorker' in navigator) 
+        {
+            navigator.serviceWorker.addEventListener('message', (event) =>
             {
-                if ('serviceWorker' in navigator) 
-                    {
-                        navigator.serviceWorker.addEventListener('message', (event) => {
-                            if (event.data?.type === 'notification-action') 
-                            {
-                                // Handle the action (event.data.action)
-                                console.log('Notification action received:', event.data.action);
-                                resolver(event.data.action);
-                            }
-                        });
-                    }
-            }
-        );
+                if (event.data?.type === 'notification-action') 
+                {
+                    // Handle the action (event.data.action)
+                    console.log('Notification action received:', event.data.action);
+                    onAction(event.data.action);
+                }
+            });
+        }
     }
 }
