@@ -25,23 +25,42 @@ export class WebNotificationService implements INotificationService
         const permission = await Notification.requestPermission();
         if (permission === 'granted')
         {
-            // new Notification(notification.title, {
-            //     body: notification.textMessage,
-            //     data: notification.picture,
-            // });
             const serviceWorkerRegistration = await navigator.serviceWorker.ready;
 
             await serviceWorkerRegistration.showNotification(notification.title, {
                 body: notification.textMessage,
                 icon: notification.picture,
-                actions: [
-                    { action: 'like', title: '👍 Like' },
-                    { action: 'reply', title: '💬 Reply' },
-                ]
+                image: notification.picture, // Add this line to include the picture in the notification
+                actions: notification.actions,
             });
+
         } else
         {
             Alert.alert("Notification permission not granted.");
+        }
+    }
+
+    async ScheduleNotif(notification: NotificationM, intervalMs: number = 60000): Promise<void> 
+    {
+        setTimeout(async () =>
+        {
+            await this.Send(notification);
+        }, intervalMs);
+    }
+
+    SetupNotificationListener(onAction: (action: string) => void): void
+    {
+        if ('serviceWorker' in navigator) 
+        {
+            navigator.serviceWorker.addEventListener('message', (event) =>
+            {
+                if (event.data?.type === 'notification-action') 
+                {
+                    // Handle the action (event.data.action)
+                    console.log('Notification action received:', event.data.action);
+                    onAction(event.data.action);
+                }
+            });
         }
     }
 }
