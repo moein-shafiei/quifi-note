@@ -1,21 +1,16 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
-import { useState } from 'react';
-import { Word } from '../Intermediate/Word';
-
-// Example word data (replace with real data or props)
-const exampleWord: Word = {
-    id: '1',
-    name: 'Example',
-    picture: 'https://png.pngtree.com/png-vector/20221217/ourmid/pngtree-example-sample-grungy-stamp-vector-png-image_15560590.png',
-    definition: 'This is an example definition.',
-    audio: '',
-    example: 'This is an example sentence.',
-    audioExample: '',
-};
+import { useEffect, useState } from 'react';
+import { Word } from '@/Intermediate/Word';
+import { WordService } from '@/word/wordService';
 
 export default function WordView() {
+    const [word, setWord] = useState<Word | null>(null);
     const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+    useEffect(() => {
+        WordService.getById('1').then((w: Word | undefined) => setWord(w ?? null));
+    }, []);
 
     async function playAudio(uri: string) {
         if (!uri) return;
@@ -24,12 +19,14 @@ export default function WordView() {
         await sound.playAsync();
     }
 
+    if (!word) return <View style={styles.container}><Text>Loading...</Text></View>;
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{exampleWord.name}</Text>
-            <Image source={{ uri: exampleWord.picture }} style={styles.image} />
-            <Text style={styles.definition}>{exampleWord.definition}</Text>
-            <Text style={styles.example}>{exampleWord.example}</Text>
+            <Text style={styles.title}>{word.name}</Text>
+            <Image source={{ uri: word.picture }} style={styles.image} />
+            <Text style={styles.definition}>{word.definition}</Text>
+            <Text style={styles.example}>{word.example}</Text>
             {/* Add buttons to play audio if URIs are provided */}
         </View>
     );
