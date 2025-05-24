@@ -8,7 +8,8 @@ import { Category } from '@/Intermediate/Category';
 import { CategoryService } from '@/word/categoryService';
 import uuid from 'react-native-uuid';
 
-export default function WordView() {
+// Accept id as a prop
+export default function WordView({ id }: { id: string }) {
     const [word, setWord] = useState<Word | null>(null);
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -21,9 +22,13 @@ export default function WordView() {
     const [audioExample, setAudioExample] = useState('');
 
     useEffect(() => {
-        WordService.getById('1').then((w: Word | undefined) => setWord(w ?? null));
+        if (id) {
+            WordService.getById(id).then((w: Word | undefined) => setWord(w ?? null));
+        } else {
+            setWord(null);
+        }
         CategoryService.getAll().then(setCategories);
-    }, []);
+    }, [id]);
 
     async function playAudio(uri: string) {
         if (!uri) return;
@@ -61,10 +66,10 @@ export default function WordView() {
         emptyFields();
     }
 
-    if (!word) return <View style={styles.container}><Text>Loading...</Text></View>;
+    //if (!word) return <View style={styles.container}><Text>Loading...</Text></View>;
 
-    // If any field is filled, use the input UI, otherwise show the loaded word
-    const isEditing = name || picture || definition || audio || example || audioExample || selectedCategory;
+    // If any field is filled, use the input UI, or if word is null (not found), show edit UI
+    const isEditing = !word || name || picture || definition || audio || example || audioExample || selectedCategory;
 
     return (
         <View style={styles.container}>
