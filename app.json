@@ -45,7 +45,8 @@
       },
       "eas": {
         "projectId": "773ee198-596d-4bdc-856f-b15852fb07ee"
-      }
+      },
+      "openaiApiKey": "sk-REPLACE_ME_WITH_YOUR_KEY"
     }
   }
 }
